@@ -1,5 +1,5 @@
 import React from 'react';
-
+import axios from 'axios';
 
 /**
  * Displays everyone with displayedRole
@@ -12,7 +12,8 @@ const SameRoleList = ({name, players, displayedRole, indexes}) => {
     if(displayedRole === 'Civilian') {
         return(
             <div>
-                <h1>You are sleeping</h1>
+                <h1>You are a Civilian</h1>
+                <h3>You are sleeping</h3>
             </div>
         )
     }
@@ -31,7 +32,7 @@ const SameRoleList = ({name, players, displayedRole, indexes}) => {
 
     const JustTheList = () => {
         return playerSubset.map((player, index) => {
-            return (player.name === name ? <div></div> :
+            return (player.name === name ? <div key={index}/> :
             <div key={index}>
                 <h3>{player.name}</h3>
             </div>
@@ -39,14 +40,18 @@ const SameRoleList = ({name, players, displayedRole, indexes}) => {
         )
     };
 
-    const vote = () => {
-
+    const vote = (name) => {
+        axios.get(`http://localhost:8080/api/v1/player/${displayedRole}/${name}`).then(res => {
+            if(res!=null) {
+                console.log(`${displayedRole}'s choice is ${res.name}`)
+            }
+        })
     }
     const VoteOptions = () => {
         return players.map((player, index) => {
             return (
                 <div key={index}>
-                    <button onClick={vote}>{player.name}</button>
+                    <button onClick={vote(player.name)}>{player.name}</button>
                 </div>
             )}
         )
@@ -54,9 +59,10 @@ const SameRoleList = ({name, players, displayedRole, indexes}) => {
 
     return(
         <div>
-            <h1>Your other {displayedRole}'s are: </h1>
+            <h2>Your role is: {displayedRole}</h2>
+            <h3>Your other {displayedRole}'s are: </h3>
             <JustTheList />
-            <h1>Who would you like to {action}?</h1>
+            <h3>Who would you like to {action}?</h3>
             <VoteOptions />
         </div>
     )

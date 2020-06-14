@@ -26,6 +26,10 @@ public class PlayerService {
         return playerDao.insertPlayer(player);
     }
 
+    public int addTestCase() {
+        return playerDao.insertTestCase();
+    }
+
     public List<Player> getAllPlayers() {
         return playerDao.selectAllPlayers();
     }
@@ -48,5 +52,17 @@ public class PlayerService {
 
     public List<Player> assignRoles() {
         return playerDao.assignRoles();
+    }
+
+    public Optional<Player> mafiaVote(String name) {
+        return playerDao.insertMafiaVote(name);
+    }
+
+    public Optional<Player> nurseVote(String name) {
+        return playerDao.insertNurseVote(name);
+    }
+
+    public Optional<Player> detectiveVote(String name) {
+        return playerDao.insertDetectiveVote(name);
     }
 }

@@ -29,7 +29,12 @@ public class PlayerController {
         playerService.addPlayer(player);
     }
 
-    @GetMapping()
+    @PostMapping(path = "test")
+    public void addTestCase() {
+        playerService.addTestCase();
+    }
+
+    @GetMapping
     public List<Player> getAllPlayers() {
         return playerService.getAllPlayers();
     }
@@ -44,6 +49,25 @@ public class PlayerController {
         return playerService.getPlayerByName(name)
                 .orElse(null);
     }
+
+    @GetMapping(path = "Mafia/{name}")
+    public Player mafiaVote(@PathVariable("name") String name) {
+        return playerService.mafiaVote(name).
+                orElse(null);
+    }
+
+    @GetMapping(path = "Nurse/{name}")
+    public Player nurseVote(@PathVariable("name") String name) {
+        return playerService.nurseVote(name).
+                orElse(null);
+    }
+
+    @GetMapping(path = "Detective/{name}")
+    public Player detectiveVote(@PathVariable("name") String name) {
+        return playerService.detectiveVote(name).
+                orElse(null);
+    }
+
 
     @DeleteMapping(path = "{name}")
     public void deletePlayerByName(@PathVariable("name") String name) {
@@ -60,6 +84,8 @@ public class PlayerController {
     public void updatePlayerStatus(@PathVariable("name") String name) {
         playerService.updatePlayerStatus(name);
     }
+
+
 
 
 

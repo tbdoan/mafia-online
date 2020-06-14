@@ -5,7 +5,7 @@ import axios from 'axios';
  * Allows new player to enter their name
  *
  */
-const NameForm = ({fetchPlayers, setNameEntered}) => {
+const NameForm = ({players, fetchPlayers, setNameEntered}) => {
   let user = '';
   const [name, setName] = useState('');
 
@@ -13,27 +13,32 @@ const NameForm = ({fetchPlayers, setNameEntered}) => {
     setName(e.target.value);
   }
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
+  const handleSubmit = (e) => {
+    e.preventDefault();
     user = {
       name: name
     };
-    axios.post(`http://localhost:8080/api/v1/player/`, user)
-    .then(
-      fetchPlayers
-    ).then(
-      setNameEntered(name)
-    )
+    let playerNames = players.map(player => player.name);
+    if(!playerNames.includes(name)) {
+      axios.post(`http://localhost:8080/api/v1/player/`, user)
+      .then(
+        fetchPlayers
+      ).then(
+        setNameEntered(name)
+      )
+    } else {
+      alert("Name already taken");
+    }
   }
 
   return (
     <div>
       <form onSubmit={handleSubmit}>
         <label>
-          Enter Player Name:
+          Enter Your Name:
           <input type="text" onChange={handleNameInput} />
         </label>
-        <button type="submit">Add</button>
+        <button type="submit">Enter</button>
       </form>
     </div>
   )

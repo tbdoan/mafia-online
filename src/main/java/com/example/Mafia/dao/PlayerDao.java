@@ -10,6 +10,8 @@ public interface PlayerDao {
 
     int insertPlayer(Player player);
 
+    int insertTestCase();
+
     List<Player> selectAllPlayers();
 
     Optional<Player> selectPlayerByName(String name);
@@ -21,4 +23,12 @@ public interface PlayerDao {
     int updateRoleByName(String name, String updateRole);
 
     List<Player> assignRoles();
+
+    Optional<Player> insertMafiaVote(String name);
+
+    Optional<Player> insertNurseVote(String name);
+
+    Optional<Player> insertDetectiveVote(String name);
+
+
 }

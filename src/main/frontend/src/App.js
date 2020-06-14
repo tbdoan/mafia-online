@@ -6,34 +6,26 @@ import PlayerList from './PlayerList';
 import SameRoleList from './SameRoleList';
 import axios from "axios";
 
-const useConstructor = ( callBack = () => {} ) => {
-  const [hasBeenCalled, setHasBeenCalled] = useState(false);
-  if (hasBeenCalled) return;
-  callBack();
-  setHasBeenCalled(true);
-}
-
 function App() {
   const [players, setPlayers] = useState([]);
   const [name, setName] = useState('');
   const [role, setRole] = useState('');
-  const [gameStart, setGameStart] = useState(true);
+  const [gameStart, setGameStart] = useState(false);
   const [indexes, setIndexes] = useState([]);
-
-  //Loads list of players when the page is loaded
-  useConstructor(() => {
-    axios.get("http://localhost:8080/api/v1/player").then(res => {
-      setPlayers(res.data);
-   })
-  });
-
-
 
   const fetchPlayers = () => {
     axios.get("http://localhost:8080/api/v1/player").then(res => {
       setPlayers(res.data);
     })
   }
+
+  useEffect(() => {
+    axios.get("http://localhost:8080/api/v1/player").then(res => {
+      setPlayers(res.data);
+    })
+  }, [])
+
+  
 
   /**
    * Starts the game. Randomly assigns roles to players and sets your role.
@@ -49,7 +41,7 @@ function App() {
       tmp[1] = tmp[0] + Math.floor(players.length/4);
       tmp[2] = tmp[1] + Math.floor(players.length/4);
       setIndexes(tmp);
-      setGameStart(false);
+      setGameStart(true);
     })
   };
 
@@ -57,7 +49,6 @@ function App() {
     return (
       <div>
         <h1>Your name is: {name} </h1>
-        <h2>Your role is: {role}</h2>
       </div>
     )
   }
@@ -68,15 +59,21 @@ function App() {
     <div className="App">
       {name==='' ?
         <div>
-          <NameForm fetchPlayers={fetchPlayers} setNameEntered={setName}/>
+          <NameForm players={players} fetchPlayers={fetchPlayers} setNameEntered={setName}/>
         </div>
-        : <Message />
+        :
+        <div>
+          <Message />
+        </div>
       }
-      {gameStart ?
-        <PlayerList playerList={players} /> :
+      {!gameStart ?
+        <div>
+          <PlayerList playerList={players} />
+        </div> :
         <SameRoleList name={name} players={players} displayedRole={role} indexes={indexes}/>
       }
-      <button onClick={start}>Start Game</button>
+      {name !=='' && !gameStart ? <button onClick={start}>Start Game</button> : <div/>}
+
     </div>
   );
 }
