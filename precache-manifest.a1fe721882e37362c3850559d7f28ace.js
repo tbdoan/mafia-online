@@ -1,10 +1,10 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "7df22a7d88e9cb1b1c013606e7151799",
+    "revision": "0e10d9468418a9a624ca184e571c1c8d",
     "url": "/mafia-online/index.html"
   },
   {
-    "revision": "023a616880459b20dd00",
+    "revision": "9e6816e23240712f417e",
     "url": "/mafia-online/static/css/main.523f09c5.chunk.css"
   },
   {
@@ -16,8 +16,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/mafia-online/static/js/2.024a3baa.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "023a616880459b20dd00",
-    "url": "/mafia-online/static/js/main.cb781af4.chunk.js"
+    "revision": "9e6816e23240712f417e",
+    "url": "/mafia-online/static/js/main.db43c972.chunk.js"
   },
   {
     "revision": "5df206d3a57fca6b57ad",

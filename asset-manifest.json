@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/mafia-online/static/css/main.523f09c5.chunk.css",
-    "main.js": "/mafia-online/static/js/main.cb781af4.chunk.js",
-    "main.js.map": "/mafia-online/static/js/main.cb781af4.chunk.js.map",
+    "main.js": "/mafia-online/static/js/main.db43c972.chunk.js",
+    "main.js.map": "/mafia-online/static/js/main.db43c972.chunk.js.map",
     "runtime-main.js": "/mafia-online/static/js/runtime-main.1937a3d5.js",
     "runtime-main.js.map": "/mafia-online/static/js/runtime-main.1937a3d5.js.map",
     "static/js/2.024a3baa.chunk.js": "/mafia-online/static/js/2.024a3baa.chunk.js",
     "static/js/2.024a3baa.chunk.js.map": "/mafia-online/static/js/2.024a3baa.chunk.js.map",
     "index.html": "/mafia-online/index.html",
-    "precache-manifest.3a1437d9b2f46cdea3f19eb11cd6d190.js": "/mafia-online/precache-manifest.3a1437d9b2f46cdea3f19eb11cd6d190.js",
+    "precache-manifest.a1fe721882e37362c3850559d7f28ace.js": "/mafia-online/precache-manifest.a1fe721882e37362c3850559d7f28ace.js",
     "service-worker.js": "/mafia-online/service-worker.js",
     "static/css/main.523f09c5.chunk.css.map": "/mafia-online/static/css/main.523f09c5.chunk.css.map",
     "static/js/2.024a3baa.chunk.js.LICENSE.txt": "/mafia-online/static/js/2.024a3baa.chunk.js.LICENSE.txt"
@@ -17,6 +17,6 @@
     "static/js/runtime-main.1937a3d5.js",
     "static/js/2.024a3baa.chunk.js",
     "static/css/main.523f09c5.chunk.css",
-    "static/js/main.cb781af4.chunk.js"
+    "static/js/main.db43c972.chunk.js"
   ]
 }
