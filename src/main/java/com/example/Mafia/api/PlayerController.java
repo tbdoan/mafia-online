@@ -7,11 +7,12 @@ import com.example.Mafia.model.Player;
 import com.example.Mafia.service.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
 @RequestMapping("api/v1/player")
@@ -28,6 +29,14 @@ public class PlayerController {
     public void addPerson(@Valid @NonNull @RequestBody Player player) {
         playerService.addPlayer(player);
     }
+
+    @MessageMapping("/hello")
+    @SendTo("/topic/players")
+    public List<Player> getPlayers(Player player) throws Exception {
+        playerService.addPlayer(player);
+        return getAllPlayers();
+    }
+
 
     @PostMapping(path = "test")
     public void addTestCase() {
@@ -68,7 +77,6 @@ public class PlayerController {
                 orElse(null);
     }
 
-
     @DeleteMapping(path = "{name}")
     public void deletePlayerByName(@PathVariable("name") String name) {
         playerService.deletePlayer(name);
@@ -84,9 +92,4 @@ public class PlayerController {
     public void updatePlayerStatus(@PathVariable("name") String name) {
         playerService.updatePlayerStatus(name);
     }
-
-
-
-
-
 }
