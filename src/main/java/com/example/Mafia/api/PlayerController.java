@@ -24,19 +24,19 @@ public class PlayerController {
     public PlayerController(PlayerService playerService) {
         this.playerService = playerService;
     }
-    
-    @PostMapping
-    public void addPerson(@Valid @NonNull @RequestBody Player player) {
-        playerService.addPlayer(player);
-    }
 
+    /**
+     * Adds a player, then returns the list of players.
+     *
+     * @param player - player to be added
+     * @return - list of players
+     */
     @MessageMapping("/hello")
     @SendTo("/topic/players")
-    public List<Player> getPlayers(Player player) throws Exception {
+    public List<Player> addPlayer(Player player) {
         playerService.addPlayer(player);
-        return getAllPlayers();
+        return playerService.getAllPlayers();
     }
-
 
     @PostMapping(path = "test")
     public void addTestCase() {
