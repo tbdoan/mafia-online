@@ -11,6 +11,7 @@ import java.util.*;
 @Repository("realDao")
 public class PlayerDataAccessService implements PlayerDao{
     private static List<Player> DB = new ArrayList<>();
+    private String gameState = "Setup";
     int mafiaIndex;
     int nurseIndex;
     int detectiveIndex;
@@ -29,6 +30,15 @@ public class PlayerDataAccessService implements PlayerDao{
     private static final int NURSE_DIVIDER = 4;
     private static final int DETECTIVE_DIVIDER = 4;
 
+    @Override
+    public String getGameState() {
+        return gameState;
+    }
+    @Override
+    public String setGameState(String newGameState) {
+        gameState = newGameState;
+        return gameState;
+    }
 
     @Override
     public Optional<Player> insertMafiaVote(String name) {
@@ -113,6 +123,11 @@ public class PlayerDataAccessService implements PlayerDao{
     }
 
     @Override
+    public List<Player> selectAllPlayers() {
+        return DB;
+    }
+
+    @Override
     public int deletePlayerByName(String name) {
         Optional<Player> playerMaybe = selectPlayerByName(name);
         if(playerMaybe.isEmpty()) {
@@ -146,11 +161,6 @@ public class PlayerDataAccessService implements PlayerDao{
     }
 
     @Override
-    public List<Player> selectAllPlayers() {
-        return DB;
-    }
-
-    @Override
     public List<Player> assignRoles() {
         if(DB.size() < MIN_PLAYER_COUNT) {
             return DB;
@@ -174,6 +184,10 @@ public class PlayerDataAccessService implements PlayerDao{
         for (int i = nurseIndex; i < detectiveIndex; i++) {
             DB.get(i).setRole("Detective");
         }
+        for (int i = detectiveIndex; i < DB.size(); i++) {
+            DB.get(i).setRole("Civilian");
+        }
+        gameState = "started";
         return DB;
     }
 }

@@ -65,4 +65,12 @@ public class PlayerService {
     public Optional<Player> detectiveVote(String name) {
         return playerDao.insertDetectiveVote(name);
     }
+
+    public String getGameState() {
+        return playerDao.getGameState();
+    }
+
+    public String setGameState(String newGameState) {
+        return playerDao.setGameState(newGameState);
+    }
 }

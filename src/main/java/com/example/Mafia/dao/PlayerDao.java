@@ -8,6 +8,10 @@ import java.util.UUID;
 
 public interface PlayerDao {
 
+    String setGameState(String newGameState);
+
+    String getGameState();
+
     int insertPlayer(Player player);
 
     int insertTestCase();

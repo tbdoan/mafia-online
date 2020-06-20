@@ -31,11 +31,23 @@ public class PlayerController {
      * @param player - player to be added
      * @return - list of players
      */
-    @MessageMapping("/hello")
-    @SendTo("/topic/players")
+    @MessageMapping("/enterName")
+    @SendTo("/topic/enterName")
     public List<Player> addPlayer(Player player) {
         playerService.addPlayer(player);
         return playerService.getAllPlayers();
+    }
+
+    @MessageMapping("/startGame")
+    @SendTo("/topic/startGame")
+    public List<Player> assignRoles() {
+        return playerService.assignRoles();
+    }
+
+    @MessageMapping("/gameState")
+    @SendTo("/topic/gameState")
+    public String setGameState() {
+        return playerService.getGameState();
     }
 
     @PostMapping(path = "test")
@@ -47,12 +59,12 @@ public class PlayerController {
     public List<Player> getAllPlayers() {
         return playerService.getAllPlayers();
     }
-
-    @GetMapping(headers = "action=assign-roles")
-    public List<Player> assignRoles() {
-        return playerService.assignRoles();
+/*
+    @GetMapping(headers = "action=getGameState")
+    public String getGameState() {
+        return playerService.getGameState();
     }
-
+*/
     @GetMapping(path = "{name}")
     public Player getPlayerByName(@PathVariable("name") String name) {
         return playerService.getPlayerByName(name)
