@@ -24,6 +24,8 @@ public class PlayerDataAccessService implements PlayerDao{
     Map<String, Integer> nurseVotes = new HashMap<>();
     Map<String, Integer> detectiveVotes = new HashMap<>();
 
+    Map<String, Player> voted = new HashMap<>();
+
 
     private static final int MIN_PLAYER_COUNT = 6;
     private static final int MAFIA_DIVIDER = 3;
@@ -41,23 +43,29 @@ public class PlayerDataAccessService implements PlayerDao{
     }
 
     @Override
+    public Map<String, Player> getVoted() {
+        return voted;
+    }
+
+    @Override
     public Optional<Player> insertMafiaVote(String name) {
-        return genericVote(mafiaVotes, numMafia, name);
+        return genericVote(mafiaVotes, numMafia, name, "Mafia");
     }
 
     @Override
     public Optional<Player> insertNurseVote(String name) {
-        return genericVote(nurseVotes, numNurses, name);
+        return genericVote(nurseVotes, numNurses, name, "Nurse");
     }
 
     @Override
     public Optional<Player> insertDetectiveVote(String name) {
-        return genericVote(detectiveVotes, numDetectives, name);
+        return genericVote(detectiveVotes, numDetectives, name, "Detective");
     }
 
     private Optional<Player> genericVote(Map<String, Integer> voteMap,
                                          int voteCap,
-                                         String name) {
+                                         String name,
+                                         String role) {
         if(voteMap.containsKey(name))
             voteMap.put(name, voteMap.get(name) + 1);
         else
@@ -70,6 +78,7 @@ public class PlayerDataAccessService implements PlayerDao{
             Optional<Player> toBeReturned =
                     selectPlayerByName(findMostVotes(voteMap));
             voteMap.clear();
+            voted.put(role, toBeReturned.get());
             return toBeReturned;
         }
         else
@@ -164,6 +173,7 @@ public class PlayerDataAccessService implements PlayerDao{
     public List<Player> assignRoles() {
         if(DB.size() < MIN_PLAYER_COUNT) {
             return DB;
+
         }
         Collections.shuffle(DB);
 

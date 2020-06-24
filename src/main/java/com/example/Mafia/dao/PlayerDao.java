@@ -3,6 +3,7 @@ package com.example.Mafia.dao;
 import com.example.Mafia.model.Player;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -11,6 +12,8 @@ public interface PlayerDao {
     String setGameState(String newGameState);
 
     String getGameState();
+
+    Map<String, Player> getVoted();
 
     int insertPlayer(Player player);
 

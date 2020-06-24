@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -72,5 +73,9 @@ public class PlayerService {
 
     public String setGameState(String newGameState) {
         return playerDao.setGameState(newGameState);
+    }
+
+    public Map<String, Player> getVoted() {
+        return playerDao.getVoted();
     }
 }

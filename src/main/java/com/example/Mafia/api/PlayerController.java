@@ -50,6 +50,12 @@ public class PlayerController {
         return playerService.getGameState();
     }
 
+    @MessageMapping("/nightDone")
+    @SendTo("/topic/nightDone")
+    public Map<String, Player> getVoted() {
+        return playerService.getVoted();
+    }
+
     @PostMapping(path = "test")
     public void addTestCase() {
         playerService.addTestCase();
@@ -71,19 +77,22 @@ public class PlayerController {
                 .orElse(null);
     }
 
-    @GetMapping(path = "Mafia/{name}")
+    @MessageMapping("/Mafia")
+    @SendTo("/topic/Mafia")
     public Player mafiaVote(@PathVariable("name") String name) {
         return playerService.mafiaVote(name).
                 orElse(null);
     }
 
-    @GetMapping(path = "Nurse/{name}")
+    @MessageMapping("/Nurse")
+    @SendTo("/topic/Nurse")
     public Player nurseVote(@PathVariable("name") String name) {
         return playerService.nurseVote(name).
                 orElse(null);
     }
 
-    @GetMapping(path = "Detective/{name}")
+    @MessageMapping("/Detective")
+    @SendTo("/topic/Detective")
     public Player detectiveVote(@PathVariable("name") String name) {
         return playerService.detectiveVote(name).
                 orElse(null);
