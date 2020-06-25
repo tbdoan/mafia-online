@@ -50,8 +50,8 @@ public class PlayerController {
         return playerService.getGameState();
     }
 
-    @MessageMapping("/nightDone")
-    @SendTo("/topic/nightDone")
+    @MessageMapping("/getVoted")
+    @SendTo("/topic/getVoted")
     public Map<String, Player> getVoted() {
         return playerService.getVoted();
     }
@@ -98,6 +98,13 @@ public class PlayerController {
                 orElse(null);
     }
 
+    @MessageMapping("/Civilian")
+    @SendTo("/topic/Civilian")
+    public Player civilianVote(@PathVariable("name") String name) {
+        return playerService.civilianVote(name).
+                orElse(null);
+    }
+
     @DeleteMapping(path = "{name}")
     public void deletePlayerByName(@PathVariable("name") String name) {
         playerService.deletePlayer(name);
@@ -110,7 +117,8 @@ public class PlayerController {
     }
 
     @PutMapping(path = "{name}", headers = "action=update-status")
-    public void updatePlayerStatus(@PathVariable("name") String name) {
+    public List<Player> updatePlayerStatus(@PathVariable("name") String name) {
         playerService.updatePlayerStatus(name);
+        return getAllPlayers();
     }
 }

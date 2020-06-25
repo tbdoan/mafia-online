@@ -67,6 +67,10 @@ public class PlayerService {
         return playerDao.insertDetectiveVote(name);
     }
 
+    public Optional<Player> civilianVote(String name) {
+        return playerDao.insertCivilianVote(name);
+    }
+
     public String getGameState() {
         return playerDao.getGameState();
     }

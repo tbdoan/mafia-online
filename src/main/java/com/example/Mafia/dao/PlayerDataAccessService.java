@@ -23,6 +23,7 @@ public class PlayerDataAccessService implements PlayerDao{
     Map<String, Integer> mafiaVotes = new HashMap<>();
     Map<String, Integer> nurseVotes = new HashMap<>();
     Map<String, Integer> detectiveVotes = new HashMap<>();
+    Map<String, Integer> civilianVotes = new HashMap<>();
 
     Map<String, Player> voted = new HashMap<>();
 
@@ -49,17 +50,40 @@ public class PlayerDataAccessService implements PlayerDao{
 
     @Override
     public Optional<Player> insertMafiaVote(String name) {
+        int numMafia =
+                (int) DB.stream()
+                        .filter(p -> p.isAlive() && p.getRole().equals("Mafia"))
+                        .count();
         return genericVote(mafiaVotes, numMafia, name, "Mafia");
     }
 
     @Override
     public Optional<Player> insertNurseVote(String name) {
+        int numNurses =
+                (int) DB.stream()
+                        .filter(p -> p.isAlive() && p.getRole().equals(
+                                "Nurse"))
+                        .count();
         return genericVote(nurseVotes, numNurses, name, "Nurse");
     }
 
     @Override
     public Optional<Player> insertDetectiveVote(String name) {
+        int numDetectives =
+                (int) DB.stream()
+                        .filter(p -> p.isAlive() && p.getRole().equals(
+                                "Detective"))
+                        .count();
         return genericVote(detectiveVotes, numDetectives, name, "Detective");
+    }
+
+    @Override
+    public Optional<Player> insertCivilianVote(String name) {
+        int numCivilians =
+                (int) DB.stream()
+                        .filter(p -> p.isAlive())
+                        .count();
+        return genericVote(civilianVotes, numCivilians, name, "Civilian");
     }
 
     private Optional<Player> genericVote(Map<String, Integer> voteMap,

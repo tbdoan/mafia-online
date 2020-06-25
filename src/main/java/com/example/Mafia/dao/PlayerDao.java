@@ -37,5 +37,8 @@ public interface PlayerDao {
 
     Optional<Player> insertDetectiveVote(String name);
 
+    Optional<Player> insertCivilianVote(String name);
+
+
 
 }

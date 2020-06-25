@@ -10,6 +10,17 @@ import Nighttime from './Nighttime'
 import Daytime from './Daytime'
 
 const App = () => {
+    //TODO: uncomment this later
+    /*
+    window.addEventListener("beforeunload", function (e) {
+        var confirmationMessage = 'It looks like you have been editing something. '
+                                + 'If you leave before saving, your changes will be lost.';
+
+        (e || window.event).returnValue = confirmationMessage; //Gecko + IE
+        return confirmationMessage; //Gecko + Webkit, Safari, Chrome etc.
+    });
+    */
+
     const [players, setPlayers] = useState([]);
     const [indexes , setIndexes] = useState(null);
     const [name, setName] = useState('');
@@ -50,7 +61,7 @@ const App = () => {
     useEffect(() => {
         if(indexes !== null) {
             setGameState('night');
-            stompClient.subscribe('/topic/nightDone', (msg) => {
+            stompClient.subscribe('/topic/getVoted', (msg) => {
                 setChosenPlayers(JSON.parse(msg.body));
             });
         }
@@ -61,6 +72,7 @@ const App = () => {
             setTimeout(() => {setGameState('day')}, 5000);
         }
     }, [chosenPlayers])
+
     /**
      * runs on game start
      */
@@ -68,7 +80,6 @@ const App = () => {
         axios.get(`http://localhost:8080/api/v1/player/${name}`).then( res => {
             setRole(res.data.role);
         });
-        console.log(players);
         const tmp = [0, 0, 0];
         tmp[0] = Math.floor(players.length/3);
         tmp[1] = tmp[0] + Math.floor(players.length/4);
@@ -98,7 +109,12 @@ const App = () => {
         )
     } else if(gameState === 'day') {
         return (
-            <Daytime chosenPlayers={chosenPlayers}/>
+            <Daytime setPlayers={setPlayers}
+                name={name}
+                players={players}
+                stompClient={stompClient}
+                chosenPlayers={chosenPlayers}
+                setGameState={setGameState} />
         )
     }
     else {
