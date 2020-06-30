@@ -14,12 +14,19 @@ const Nighttime = ({players, setPlayers, name, stompClient, setGameState, setVot
     useEffect(() => {
         const sub = stompClient.subscribe('/topic/getVoteResults', (msg) => {
             sub.unsubscribe();
-            setVoteResult(JSON.parse(msg.body));
-            axios.get('http://localhost:8080/api/v1/player/').then(res => {
-                setPlayers(res.data);
-            })
-            //waits three seconds until sunrise
-            setTimeout(() => {setGameState('day')}, 3000);
+            let target = JSON.parse(msg.body);
+            if(target.role==="Civilian Victory") {
+                setGameState('civwin');
+            } else if(target.role==="Mafia Victory") {
+                setGameState('mafwin');
+            } else {
+                setVoteResult(target);
+                axios.get('http://localhost:8080/api/v1/player/').then(res => {
+                    setPlayers(res.data);
+                })
+                //waits three seconds until sunrise
+                setTimeout(() => {setGameState('day')}, 3000);
+            }
         })
         let thisPlayer = players.find(p => {return p.name === name});
         setRole(thisPlayer.role);
