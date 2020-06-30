@@ -1,6 +1,5 @@
 // eslint-disable-next-line
 import React, {useState, useEffect} from 'react';
-import axios from 'axios'
 import SockJS from "sockjs-client"
 import {Stomp} from "@stomp/stompjs"
 
@@ -21,106 +20,74 @@ const App = () => {
     });
     */
 
-    const [players, setPlayers] = useState([]);
-    const [indexes , setIndexes] = useState(null);
     const [name, setName] = useState('');
-    const [role, setRole] = useState('');
+    const [players, setPlayers] = useState([]);
     const [gameState, setGameState] = useState('pregame');
     const [stompClient, setStompClient] = useState(null);
-    const [chosenPlayers, setChosenPlayers] = useState({});
+    const [voteResult, setVoteResult] = useState('voteResult');
 
     /**
-     * creates stompclient
-     */
-    const createStompClient = (e) => {
-        if(typeof e !== 'undefined') {
-            e.preventDefault();
-        }
-        //create a new socket connection
-        const sock = new SockJS('http://localhost:8080/gs-guide-websocket');
-        setStompClient(Stomp.over(sock));
-    }
-
-    /**
-     * fetches players (only used in beginning)
-     */
-    const fetchPlayers = () => {
-        axios.get("http://localhost:8080/api/v1/player").then(res => {
-            setPlayers(res.data);
-        });
-    }
-
-    /**
-     * runs ONCE on page load
+     * creates stompClient on page load
+     *
      */
     useEffect(() => {
-        createStompClient();
-        fetchPlayers();
+        const sock = new SockJS('http://localhost:8080/mafia-game-websocket');
+        const stompClient = Stomp.over(sock);
+        stompClient.connect({}, () => {
+            setStompClient(stompClient);
+        })
     }, []);
-
-    useEffect(() => {
-        if(indexes !== null) {
-            setGameState('night');
-            stompClient.subscribe('/topic/getVoted', (msg) => {
-                setChosenPlayers(JSON.parse(msg.body));
-            });
-        }
-    }, [indexes]);
-
-    useEffect(()=> {
-        if(Object.keys(chosenPlayers).length === 3) {
-            setTimeout(() => {setGameState('day')}, 5000);
-        }
-    }, [chosenPlayers])
-
-    /**
-     * runs on game start
-     */
-    const start = (players) => {
-        axios.get(`http://localhost:8080/api/v1/player/${name}`).then( res => {
-            setRole(res.data.role);
-        });
-        const tmp = [0, 0, 0];
-        tmp[0] = Math.floor(players.length/3);
-        tmp[1] = tmp[0] + Math.floor(players.length/4);
-        tmp[2] = tmp[1] + Math.floor(players.length/4);
-        setIndexes(tmp);
-    }
 
     if(gameState === 'pregame') {
         return (
             <Pregame name={name}
-                    setName={setName}
-                    players={players}
-                    setPlayers={setPlayers}
-                    stompClient={stompClient}
-                    setGameState={setGameState}
-                    start={start}
+                setName={setName}
+                players={players}
+                setPlayers={setPlayers}
+                setGameState={setGameState}
+                stompClient={stompClient}
             />
         )
     } else if(gameState === 'night') {
         return (
-            <Nighttime name={name}
-                players={players}
-                role={role}
-                indexes={indexes}
+            <Nighttime players={players}
+                setPlayers={setPlayers}
+                name={name}
+                setGameState={setGameState}
                 stompClient={stompClient}
+                setVoteResult={setVoteResult}
             />
         )
     } else if(gameState === 'day') {
         return (
-            <Daytime setPlayers={setPlayers}
+            <Daytime voteResult={voteResult}
                 name={name}
                 players={players}
+                setPlayers={setPlayers}
                 stompClient={stompClient}
-                chosenPlayers={chosenPlayers}
-                setGameState={setGameState} />
+                setGameState={setGameState}
+            />
+        )
+    } else if(gameState === 'dead') {
+        return (
+            <div className='App'>
+                <h1> YOU </h1>
+                <h1> ARE </h1>
+                <h1> DEAD </h1>
+            </div>
+        )
+    } else if(gameState === 'civwin') {
+        return (
+            <h1>CIVILIANS WIN!</h1>
+        )
+    } else if(gameState === 'mafwin') {
+        return (
+            <h1>MAFIA WIN!</h1>
         )
     }
     else {
         return(<div/>);
     }
-
 }
 
 export default App;

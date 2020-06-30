@@ -25,16 +25,9 @@ public class PlayerController {
         this.playerService = playerService;
     }
 
-    /**
-     * Adds a player, then returns the list of players.
-     *
-     * @param player - player to be added
-     * @return - list of players
-     */
-    @MessageMapping("/enterName")
-    @SendTo("/topic/enterName")
-    public List<Player> addPlayer(Player player) {
-        playerService.addPlayer(player);
+    @MessageMapping("/updatePlayers")
+    @SendTo("/topic/updatePlayers")
+    public List<Player> updatePlayers() {
         return playerService.getAllPlayers();
     }
 
@@ -46,14 +39,16 @@ public class PlayerController {
 
     @MessageMapping("/gameState")
     @SendTo("/topic/gameState")
-    public String setGameState() {
+    public String setGameState(String newGameState) {
+        if(!newGameState.equals(""))
+            playerService.setGameState(newGameState);
         return playerService.getGameState();
     }
 
-    @MessageMapping("/getVoted")
-    @SendTo("/topic/getVoted")
-    public Map<String, Player> getVoted() {
-        return playerService.getVoted();
+    @MessageMapping("/getVoteResults")
+    @SendTo("/topic/getVoteResults")
+    public Player getVoteResults() {
+        return playerService.getVoteResults();
     }
 
     @PostMapping(path = "test")
@@ -65,12 +60,7 @@ public class PlayerController {
     public List<Player> getAllPlayers() {
         return playerService.getAllPlayers();
     }
-/*
-    @GetMapping(headers = "action=getGameState")
-    public String getGameState() {
-        return playerService.getGameState();
-    }
-*/
+
     @GetMapping(path = "{name}")
     public Player getPlayerByName(@PathVariable("name") String name) {
         return playerService.getPlayerByName(name)
@@ -101,8 +91,12 @@ public class PlayerController {
     @MessageMapping("/Civilian")
     @SendTo("/topic/Civilian")
     public Player civilianVote(@PathVariable("name") String name) {
-        return playerService.civilianVote(name).
-                orElse(null);
+        return playerService.civilianVote(name);
+    }
+
+    @PostMapping(path="{name}")
+    public int addPlayer(@PathVariable("name") String name) {
+        return playerService.insertPlayer(new Player(name));
     }
 
     @DeleteMapping(path = "{name}")

@@ -9,17 +9,17 @@ import java.util.UUID;
 
 public interface PlayerDao {
 
-    String setGameState(String newGameState);
+    void setGameState(String newGameState);
 
     String getGameState();
 
-    Map<String, Player> getVoted();
+    Player getVoteResults();
 
     int insertPlayer(Player player);
 
     int insertTestCase();
 
-    List<Player> selectAllPlayers();
+    List<Player> getAllPlayers();
 
     Optional<Player> selectPlayerByName(String name);
 
@@ -37,7 +37,7 @@ public interface PlayerDao {
 
     Optional<Player> insertDetectiveVote(String name);
 
-    Optional<Player> insertCivilianVote(String name);
+    Player insertCivilianVote(String name);
 
 
 

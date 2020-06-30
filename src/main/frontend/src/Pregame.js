@@ -1,27 +1,34 @@
-import React,  {useState} from 'react'
+import React,  {useState, useEffect} from 'react'
 import EnterNameForm from './components/EnterNameForm'
 import PlayerList from './components/PlayerList';
 import StartButton from './components/StartButton';
 
 const Pregame = (props) => {
     const [nameEntered, setNameEntered] = useState(false);
+
+    useEffect(() => {
+        if(props.stompClient != null) {
+            const sub = props.stompClient.subscribe('/topic/updatePlayers', (msg) => {
+                props.setPlayers(JSON.parse(msg.body));
+            });
+        }
+    }, [props.stompClient])
+
     return (
         <div className='App'>
-            {nameEntered ?
+            {!nameEntered ?
                 <div>
-                    <h1>Your name is {props.name}</h1>
-                    <PlayerList players={props.players} />
-                    <StartButton stompClient={props.stompClient}
-                            setPlayers={props.setPlayers}
-                            start={props.start} />
+                    <h1>This is Mafia.</h1>
+                    <EnterNameForm stompClient={props.stompClient}
+                        setName={props.setName}
+                        setNameEntered={setNameEntered}
+                        />
                 </div> :
                 <div>
-                    <EnterNameForm updateName={props.setName}
-                            players={props.players}
-                            setPlayers={props.setPlayers}
-                            stompClient={props.stompClient}
-                            setNameEntered={setNameEntered}
-                            />
+                    <h1>Your name is {props.name}</h1>
+                    <StartButton setGameState={props.setGameState}
+                        stompClient={props.stompClient}
+                        setPlayers={props.setPlayers}/>
                     <PlayerList players={props.players} />
                 </div>
             }
