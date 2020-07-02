@@ -2,11 +2,12 @@ import React,  {useState} from 'react'
 import EnterNameForm from './components/EnterNameForm'
 import PlayerList from './components/PlayerList';
 import StartButton from './components/StartButton';
+import './App.css'
 
 const Pregame = (props) => {
     const [nameEntered, setNameEntered] = useState(false);
     return (
-        <div className='App'>
+        <div className='preGame'>
             {nameEntered ?
                 <div>
                     <h1>Your name is {props.name}</h1>
@@ -22,7 +23,6 @@ const Pregame = (props) => {
                             stompClient={props.stompClient}
                             setNameEntered={setNameEntered}
                             />
-                    <PlayerList players={props.players} />
                 </div>
             }
         </div>

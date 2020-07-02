@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from 'react'
+import './Components.css'
 
 const EnterNameForm = ({updateName, players, setPlayers, stompClient,setNameEntered}) => {
     const [name, setName] = useState('');
@@ -30,14 +31,13 @@ const EnterNameForm = ({updateName, players, setPlayers, stompClient,setNameEnte
     }
 
     return(
-        <div>
+        <div className="startPage">
+            <h1>MAFIA</h1>
             <form onSubmit={handleSubmit}>
-                <label>
-                Enter Your Name:
-                <input type="text" onChange={handleNameInput} />
-                </label>
-                <button type="submit">Submit</button>
+                <input className="namebox" type="text" placeholder="Name" onChange={handleNameInput} />
+                <button className="buttonOne" type="submit">Enter</button>
             </form>
+            
         </div>
     );
 }

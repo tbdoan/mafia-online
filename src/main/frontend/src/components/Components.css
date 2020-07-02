@@ -1,0 +1,48 @@
+*{
+    box-sizing: border-box;
+    background-color: black;
+}
+.startPage h1{
+    display: block;
+    padding: 125px;
+    margin-bottom: -120px;
+    text-align: center;
+    color: rgb(168,9,9);
+    font-size: 100px;
+    font-family: 'Times New Roman';
+    width: 100%;
+    height: auto;
+}
+
+.startPage .namebox{
+    display: block;
+    background-color: white;
+    font-family: Courier;
+    width: 220px;
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    margin: auto;
+    box-shadow: inset;
+}
+
+.startPage .buttonOne{
+    background-color: black;
+    border: 0.5px solid white;
+    display: block;
+    max-width: 200px;
+    margin: auto;
+    margin-top: 20px;
+    padding: 8px 20px;
+    text-align: center;
+    text-decoration: white;
+    color:white;
+    font-size: 20px;
+    font-family: Courier New;
+    letter-spacing: 1px;;
+}
+.startPage .buttonOne:hover{
+    background-color: #d32b2b7e;
+    border: 2px soild black;
+    color: black;
+}
