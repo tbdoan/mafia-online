@@ -250,7 +250,7 @@ public class PlayerDataAccessService implements PlayerDao{
     @Override
     public List<Player> assignRoles() {
         if(DB.size() < MIN_PLAYER_COUNT) {
-            return DB;
+            return new ArrayList<>();
         }
         Collections.shuffle(DB);
 

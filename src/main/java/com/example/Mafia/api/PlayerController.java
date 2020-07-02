@@ -67,6 +67,11 @@ public class PlayerController {
                 .orElse(null);
     }
 
+    @GetMapping(path = "gameState")
+    public String getGameState() {
+        return playerService.getGameState();
+    }
+
     @MessageMapping("/Mafia")
     @SendTo("/topic/Mafia")
     public Player mafiaVote(@PathVariable("name") String name) {

@@ -5,9 +5,14 @@ const StartButton = ({stompClient, setPlayers, setGameState}) => {
     useEffect(() => {
         if(stompClient != null) {
             const sub = stompClient.subscribe('/topic/startGame', (msg) => {
-                sub.unsubscribe();
-                setPlayers(JSON.parse(msg.body));
-                setGameState('night');
+                const players = JSON.parse(msg.body);
+                if(Object.keys(players).length === 0) {
+                    alert('Need 6 players to start');
+                } else {
+                    sub.unsubscribe();
+                    setPlayers(JSON.parse(msg.body));
+                    stompClient.send('/app/gameState', {}, 'night');
+                }
             });
         }
     }, [stompClient])
