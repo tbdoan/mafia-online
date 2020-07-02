@@ -11,22 +11,23 @@ import java.util.*;
 @Repository("realDao")
 public class PlayerDataAccessService implements PlayerDao{
     private static List<Player> DB = new ArrayList<>();
-    private String gameState = "Setup";
-    int mafiaIndex;
-    int nurseIndex;
-    int detectiveIndex;
+    private String gameState = "pregame";
 
-    int numMafia;
-    int numNurses;
-    int numDetectives;
+    private int mafiaIndex;
+    private int nurseIndex;
+    private int detectiveIndex;
 
-    Map<String, Integer> mafiaVotes = new HashMap<>();
-    Map<String, Integer> nurseVotes = new HashMap<>();
-    Map<String, Integer> detectiveVotes = new HashMap<>();
-    Map<String, Integer> civilianVotes = new HashMap<>();
+    private int numMafia;
+    private int numNurse;
+    private int numDetective;
+    private int numCivilians;
 
-    Map<String, Player> voted = new HashMap<>();
+    private Map<String, Integer> mafiaVotes = new HashMap<>();
+    private Map<String, Integer> nurseVotes = new HashMap<>();
+    private Map<String, Integer> detectiveVotes = new HashMap<>();
+    private Map<String, Integer> civilianVotes = new HashMap<>();
 
+    Map<String, Player> voteResults = new HashMap<>();
 
     private static final int MIN_PLAYER_COUNT = 6;
     private static final int MAFIA_DIVIDER = 3;
@@ -37,15 +38,37 @@ public class PlayerDataAccessService implements PlayerDao{
     public String getGameState() {
         return gameState;
     }
+
     @Override
-    public String setGameState(String newGameState) {
+    public void setGameState(String newGameState) {
         gameState = newGameState;
-        return gameState;
     }
 
     @Override
-    public Map<String, Player> getVoted() {
-        return voted;
+    public Player getVoteResults() {
+        int necessaryVotes = 0;
+        if (numMafia != 0) {
+            necessaryVotes++;
+        }
+        if (numDetective != 0) {
+            necessaryVotes++;
+        }
+        if (numNurse != 0) {
+            necessaryVotes++;
+        }
+        if(voteResults.size() < necessaryVotes)
+            return null;
+        else {
+            Player inDanger = voteResults.get("Mafia");
+            if(voteResults.containsKey("Nurse") &&
+                    inDanger.equals(voteResults.get("Nurse"))) {
+                //a life is saved
+                voteResults.clear();
+                return inDanger;
+            }
+            voteResults.clear();
+            return updateRoleCounts(inDanger);
+        }
     }
 
     @Override
@@ -78,12 +101,18 @@ public class PlayerDataAccessService implements PlayerDao{
     }
 
     @Override
-    public Optional<Player> insertCivilianVote(String name) {
+    public Player insertCivilianVote(String name) {
         int numCivilians =
                 (int) DB.stream()
                         .filter(p -> p.isAlive())
                         .count();
-        return genericVote(civilianVotes, numCivilians, name, "Civilian");
+        Optional<Player> toBeReturned =
+                genericVote(civilianVotes, numCivilians, name, "Civilian");
+        if(toBeReturned.isEmpty()) {
+            return null;
+        } else {
+            return updateRoleCounts(toBeReturned.get());
+        }
     }
 
     private Optional<Player> genericVote(Map<String, Integer> voteMap,
@@ -102,7 +131,7 @@ public class PlayerDataAccessService implements PlayerDao{
             Optional<Player> toBeReturned =
                     selectPlayerByName(findMostVotes(voteMap));
             voteMap.clear();
-            voted.put(role, toBeReturned.get());
+            voteResults.put(role, toBeReturned.get());
             return toBeReturned;
         }
         else
@@ -124,7 +153,31 @@ public class PlayerDataAccessService implements PlayerDao{
         return winner;
     }
 
-
+    private Player updateRoleCounts(Player player) {
+        String role = player.getRole();
+        if( role.equals("Mafia")) {
+            numMafia--;
+            if(numMafia == 0) {
+                Player hackySol = new Player("hacky");
+                hackySol.setRole("Civilian Victory");
+                return hackySol;
+            }
+        } else {
+            numCivilians--;
+            if(numCivilians == 0) {
+                Player hackySol = new Player("hacky");
+                hackySol.setRole("Mafia Victory");
+                return hackySol;
+            }
+            if(role.equals("Nurse")) {
+                numNurse--;
+            } else if(role.equals("Detective")) {
+                numDetective--;
+            }
+        }
+        player.setAlive(false);
+        return player;
+    }
 
     @Override
     public int insertPlayer(Player player) {
@@ -156,7 +209,7 @@ public class PlayerDataAccessService implements PlayerDao{
     }
 
     @Override
-    public List<Player> selectAllPlayers() {
+    public List<Player> getAllPlayers() {
         return DB;
     }
 
@@ -177,6 +230,7 @@ public class PlayerDataAccessService implements PlayerDao{
         if(playerToUpdate.isEmpty()) {
             return 1;
         } else {
+            updateRoleCounts(playerToUpdate.get());
             playerToUpdate.get().setAlive(false);
             return 0;
         }
@@ -197,17 +251,17 @@ public class PlayerDataAccessService implements PlayerDao{
     public List<Player> assignRoles() {
         if(DB.size() < MIN_PLAYER_COUNT) {
             return DB;
-
         }
         Collections.shuffle(DB);
 
         numMafia = DB.size()/MAFIA_DIVIDER;
-        numNurses = DB.size()/NURSE_DIVIDER;
-        numDetectives = DB.size()/DETECTIVE_DIVIDER;
+        numNurse = DB.size()/NURSE_DIVIDER;
+        numDetective = DB.size()/DETECTIVE_DIVIDER;
+        numCivilians = DB.size() - numMafia;
 
         mafiaIndex = numMafia;
-        nurseIndex = mafiaIndex + numNurses;
-        detectiveIndex = nurseIndex + numDetectives;
+        nurseIndex = mafiaIndex + numNurse;
+        detectiveIndex = nurseIndex + numDetective;
 
         for (int i = 0; i < mafiaIndex ; i++) {
             DB.get(i).setRole("Mafia");

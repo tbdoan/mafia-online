@@ -1,16 +1,19 @@
 import React from 'react'
 
-const AllVoteOptions = ({players, stompClient, role}) => {
+const VoteButtons = ({players, stompClient, role, setVoted}) => {
     const vote = (name) => {
+        setVoted(true);
         stompClient.send(`/app/${role}`, {}, name);
     }
 
+    // eslint-disable-next-line
     let playerNames = players.map((player) => {
-        if(player.alive) {
+        if(player.alive)
             return(player.name);
-        }
     });
     playerNames.sort();
+
+    // eslint-disable-next-line
     return playerNames.map((playerName, index) => {
         if(typeof playerName !== 'undefined') {
             return (
@@ -22,4 +25,4 @@ const AllVoteOptions = ({players, stompClient, role}) => {
     )
 }
 
-export default AllVoteOptions;
+export default VoteButtons;

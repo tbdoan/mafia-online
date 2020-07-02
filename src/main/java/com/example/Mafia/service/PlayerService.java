@@ -23,7 +23,7 @@ public class PlayerService {
         this.playerDao = playerDao;
     }
 
-    public int addPlayer(Player player) {
+    public int insertPlayer(Player player) {
         return playerDao.insertPlayer(player);
     }
 
@@ -32,7 +32,7 @@ public class PlayerService {
     }
 
     public List<Player> getAllPlayers() {
-        return playerDao.selectAllPlayers();
+        return playerDao.getAllPlayers();
     }
 
     public Optional<Player> getPlayerByName(String name) {
@@ -67,7 +67,7 @@ public class PlayerService {
         return playerDao.insertDetectiveVote(name);
     }
 
-    public Optional<Player> civilianVote(String name) {
+    public Player civilianVote(String name) {
         return playerDao.insertCivilianVote(name);
     }
 
@@ -75,11 +75,11 @@ public class PlayerService {
         return playerDao.getGameState();
     }
 
-    public String setGameState(String newGameState) {
-        return playerDao.setGameState(newGameState);
+    public void setGameState(String newGameState) {
+        playerDao.setGameState(newGameState);
     }
 
-    public Map<String, Player> getVoted() {
-        return playerDao.getVoted();
+    public Player getVoteResults() {
+        return playerDao.getVoteResults();
     }
 }
