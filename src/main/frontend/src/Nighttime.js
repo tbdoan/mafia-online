@@ -16,16 +16,17 @@ const Nighttime = ({players, setPlayers, name, stompClient, setGameState, setVot
             sub.unsubscribe();
             let target = JSON.parse(msg.body);
             if(target.role==="Civilian Victory") {
-                setGameState('civwin');
+                stompClient.send('/app/gameState', {}, 'civwin');
             } else if(target.role==="Mafia Victory") {
-                setGameState('mafwin');
+                stompClient.send('/app/gameState', {}, 'mafwin');
             } else {
                 setVoteResult(target);
                 axios.get('http://localhost:8080/api/v1/player/').then(res => {
                     setPlayers(res.data);
                 })
                 //waits three seconds until sunrise
-                setTimeout(() => {setGameState('day')}, 3000);
+                setTimeout(() => stompClient.send('/app/gameState', {}, 'day')
+                    , 3000);
             }
         })
         let thisPlayer = players.find(p => {return p.name === name});
