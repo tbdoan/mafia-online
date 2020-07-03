@@ -1,43 +1,36 @@
-import React, {useState, useEffect} from 'react'
-import './Components.css'
+import React, {useState} from 'react'
+import axios from 'axios'
 
-const EnterNameForm = ({updateName, players, setPlayers, stompClient,setNameEntered}) => {
-    const [name, setName] = useState('');
-
-    useEffect(() => {
-        if(stompClient != null) {
-            stompClient.connect({}, () => {
-                const subscription = stompClient.subscribe('/topic/enterName', (msg) => {
-                    let players = JSON.parse(msg.body);
-                    setPlayers(players);
-                });
-            })
-        }
-    }, [stompClient])
+const EnterNameForm = ({setName, stompClient, setNameEntered}) => {
+    const [localName, setLocalName] = useState('');
 
     const handleNameInput = (e) => {
-        setName(e.target.value);
+        setLocalName(e.target.value);
     }
 
     const handleSubmit = (e) => {
-        let playerNames = players.map(player => player.name);
-        if(name==='' || playerNames.includes(name)) {
-            alert('Invalid Name.'); return;
-        }
         e.preventDefault();
-        updateName(name);
-        stompClient.send('/app/enterName', {}, JSON.stringify({name : name}));
-        setNameEntered(true);
+        axios.post(`http://localhost:8080/api/v1/player/${localName}`).then(res => {
+            if(res.data === 0) {
+                setName(localName);
+                stompClient.send('/app/updatePlayers');
+                setNameEntered(true);
+                //send a message to stompClient
+            } else {
+                alert('Invalid Name.');
+            }
+        })
     }
 
     return(
-        <div className="startPage">
-            <h1>MAFIA</h1>
+        <div>
             <form onSubmit={handleSubmit}>
-                <input className="namebox" type="text" placeholder="Name" onChange={handleNameInput} />
-                <button className="buttonOne" type="submit">Enter</button>
+                <label>
+                Enter Your Name:
+                <input type="text" onChange={handleNameInput} />
+                </label>
+                <button type="submit">Submit</button>
             </form>
-            
         </div>
     );
 }

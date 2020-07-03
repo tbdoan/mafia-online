@@ -5,7 +5,7 @@ import Allies from './components/Allies'
 import VoteButtons from './components/VoteButtons'
 import Timer from 'react-compound-timer'
 
-const Nighttime = ({players, setPlayers, name, stompClient, setGameState, setVoteResult}) => {
+const Nighttime = ({players, setPlayers, name, stompClient, setVoteResult}) => {
     const [role, setRole] = useState('');
     const [action, setAction] = useState('');
     const [voted, setVoted] = useState(false);
