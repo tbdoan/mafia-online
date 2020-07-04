@@ -42,7 +42,10 @@ const App = () => {
             } else {
                 stompClient.connect({}, () => {
                     setStompClient(stompClient);
-                    stompClient.subscribe('/topic/gameState', (msg) => {
+                    const sub = stompClient.subscribe('/topic/gameState', (msg) => {
+                        if(msg.body==='dead') {
+                            sub.unsubscribe();
+                        }
                         setGameState(msg.body);
                     });
                 });
